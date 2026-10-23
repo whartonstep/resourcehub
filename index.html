@@ -80,6 +80,25 @@
     .prog-title { font-weight: 700; }
     .prog-when { font-size: 12px; font-weight: 700; color: #185FA5; white-space: nowrap; }
     .prog-note { font-size: 12px; color: #555; margin-top: 2px; }
+    .prog-item[role="button"] { cursor: pointer; margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: 6px; }
+    .prog-item[role="button"]:hover { background: #f4f7fb; }
+    .prog-item[role="button"]:focus-visible { outline: 2px solid #185FA5; outline-offset: -2px; }
+
+    .prog-dialog { margin: auto; width: 520px; max-width: calc(100vw - 32px); max-height: calc(100vh - 64px); border: 1px solid #000; border-radius: 10px; padding: 0; box-shadow: 0 10px 32px rgba(0,0,0,0.25); }
+    .prog-dialog::backdrop { background: rgba(4, 44, 83, 0.35); }
+    .prog-dialog-body { padding: 20px 22px 16px; font-size: 14px; }
+    .prog-dialog-close { position: absolute; top: 10px; right: 12px; background: none; border: none; font-size: 24px; line-height: 1; color: #555; cursor: pointer; }
+    .prog-dialog-head { padding-right: 28px; margin-bottom: 10px; }
+    .prog-dialog-head h2 { display: inline; font-size: 19px; vertical-align: middle; }
+    .prog-facts { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 7px 10px; margin: 14px 0 4px; }
+    .prog-facts dt { font-weight: 700; color: #0C447C; }
+    .prog-facts dd.missing { color: #888; font-style: italic; }
+    .prog-dialog-body h3 { font-size: 14px; margin: 16px 0 6px; padding-top: 12px; border-top: 1px solid #e8e8e8; }
+    .prog-dialog-body p { margin-bottom: 8px; }
+    .prog-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .prog-link { background: #0C447C; color: #fff; text-decoration: none; font-weight: 700; font-size: 13px; padding: 6px 12px; border-radius: 999px; }
+    .prog-link:hover { background: #185FA5; color: #fff; }
+    .prog-dialog-foot { font-size: 12px; color: #777; margin-top: 14px; }
     .stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin-top: 6px; }
     .stages span { font-size: 10px; line-height: 18px; color: #888; background: #eef0f3; border-radius: 999px; text-align: center; white-space: nowrap; overflow: hidden; }
     .stages .on { background: #6F9BD1; color: #fff; }
@@ -144,6 +163,8 @@
         grid-template-areas: "th" "due" "lad" "cal" "prog" "evt" "pod" "promo" "files" "ask";
       }
       .cal-frame { min-height: 400px; }
+      .stages { gap: 3px; }
+      .stages span { font-size: 9px; }
       .cal-empty { height: 400px; }
     }
   </style>
@@ -310,6 +331,11 @@
 
 <p class="footer">To request edits or report a broken link, contact <a href="mailto:ndorazio@wharton.upenn.edu">Nicolas</a>.</p>
 
+<dialog class="prog-dialog" id="prog-dialog" aria-labelledby="prog-dialog-title">
+  <button class="prog-dialog-close" type="button" aria-label="Close">×</button>
+  <div class="prog-dialog-body"></div>
+</dialog>
+
 <button class="chat-launcher" id="chat-launcher" type="button" aria-controls="chat-panel" aria-expanded="false" hidden>Ask STEP</button>
 <section class="chat-panel" id="chat-panel" role="dialog" aria-label="Ask STEP chat" hidden>
   <div class="chat-head">Ask STEP <button class="chat-close" id="chat-close" type="button" aria-label="Close chat">×</button></div>
@@ -366,19 +392,60 @@ const PILLS = { ecd: 'E/CDs', board: 'Board and committees', all: 'Everyone', op
 // Future programming. stage: 1 = Idea, 2 = Planning, 3 = Date set, 4 = Location set, 5 = Finalized
 // committee: 'ap', 'social', 'ce', 'mentorship', 'marketing', 'internal', or 'directors'
 // when: what shows on the right. date (optional, YYYY-MM-DD): sorts the list and hides the item the day after
+// note: short line on the card. Clicking an event opens a pop-up with who / what / where / why (any left out show "Not listed yet"),
+// plus blurb (the full description; blank lines start new paragraphs) and links ([label, url] pairs)
 const STAGES = ['Idea', 'Planning', 'Date set', 'Location set', 'Finalized'];
 const COMMITTEES = { ap: 'A&amp;P', social: 'Social', ce: 'CE', mentorship: 'Mentorship', marketing: 'Marketing', internal: 'Internal', directors: 'Directors' };
+const TREKS_BLURB = 'Curious what it’s really like inside a 100+ year old holding company or a fast-growing Philly retailer? Pick your trek (or sign up for both!) for a chance to explore TouchPoint or Five Below up close and meet the people behind the business.';
+const TREKS_FORMS_NOTE = 'These forms are interest only, so filling one out doesn’t guarantee a spot. Forms due October 23, and spots will be confirmed by October 30.';
 const PROGRAMS = [
-  { title: 'Blackstone Office Hours', committee: 'ap', stage: 5, when: 'Wed, Oct 14, 6–7 pm', date: '2026-10-14', note: 'JMHH F45. For second-years. RJ Sylak, a former Blackstone intern who received a return offer, talks through his internship and how he approached BX recruiting. Bring questions!' },
-  { title: 'Introduction to Service', committee: 'ce', stage: 5, when: 'Wed, Oct 14, 6 pm', date: '2026-10-14', note: 'JMHH F50. Hear from Civic House, Nonprofit Connect, the Netter Center, and CWiC about service opportunities at Penn.' },
-  { title: 'Fearless in Pink', committee: 'ce', stage: 5, when: 'Thu, Oct 22, 6:30 pm', date: '2026-10-22', note: 'JMHH F90. Games plus a women’s health seminar for Breast Cancer Awareness Month. Wear pink!' },
-  { title: 'Natural Hair Symposium', committee: 'ce', stage: 5, when: 'Thu, Oct 29, 6:30 pm', date: '2026-10-29', note: 'JMHH 265. An open conversation about navigating natural hair in professional and social spaces.' },
-  { title: 'Philly Trek: Five Below', committee: 'ap', stage: 3, when: 'Thu, Nov 5, 12–3 pm', date: '2026-11-05', note: 'For first- and second-years. <a href="https://forms.gle/TNNZDG82aBYcSaUV7" target="_blank">Interest form</a> due Oct 23; spots confirmed by Oct 30.' },
-  { title: 'Philly Trek: TouchPoint', committee: 'ap', stage: 3, when: 'Fri, Nov 6, 9 am–12 pm', date: '2026-11-06', note: 'For first- and second-years. <a href="https://docs.google.com/forms/d/e/1FAIpQLSdhLwgaHzydifQoAvcnmm0qtxrLSR6z-VbhxVQi_o-Z7unwHw/viewform" target="_blank">Interest form</a> due Oct 23; spots confirmed by Oct 30.' },
-  { title: 'Philly Connections', committee: 'social', stage: 4, when: 'Fri, Nov 6, 1–4:30 pm', date: '2026-11-06', note: 'With Wharton Together. Starts with lunch at 1 pm with Renita Miller.' },
-  { title: 'Citi Banking Breakfast', committee: 'ap', stage: 5, when: 'Fri, Oct 16, 9:30–10:30 am', date: '2026-10-16', note: 'JMHH 260. For second-years. Catered breakfast with first- and second-year analysts and the Citi recruiting team.' },
-  { title: 'Summer Internship Panel', committee: 'ap', stage: 2, when: 'November', date: '2026-11-30', note: 'With Wharton Council and JWS.' },
-  { title: 'Etiquette Dinner', committee: 'ap', stage: 2, when: 'This semester', note: 'Waiting to hear back' },
+  { title: 'Blackstone Office Hours', committee: 'ap', stage: 5, when: 'Wed, Oct 14, 6–7 pm', date: '2026-10-14',
+    note: 'JMHH F45. For second-years. RJ Sylak, a former Blackstone intern who received a return offer, talks through his internship and how he approached BX recruiting. Bring questions!',
+    who: 'Second-years', where: 'JMHH F45', what: 'Office hours on the Blackstone internship and BX recruiting',
+    why: 'Hear how a former Blackstone intern with a return offer approached recruiting',
+    blurb: 'RJ Sylak, a former Blackstone intern who received a return offer, will talk through his internship experience and how he approached BX recruiting. Bring questions!' },
+  { title: 'Introduction to Service', committee: 'ce', stage: 5, when: 'Wed, Oct 14, 6 pm', date: '2026-10-14',
+    note: 'JMHH F50. Hear from Civic House, Nonprofit Connect, the Netter Center, and CWiC about service opportunities at Penn.',
+    where: 'JMHH F50', what: 'An intro to service opportunities at Penn',
+    why: 'Learn the many ways to get involved with Penn’s community',
+    blurb: 'Join STEP CE to learn about the many ways to get involved with Penn’s community. Hear from partner organizations including Civic House, Nonprofit Connect, the Netter Center, and CWiC, and discover on-campus service opportunities available!' },
+  { title: 'Fearless in Pink', committee: 'ce', stage: 5, when: 'Thu, Oct 22, 6:30 pm', date: '2026-10-22',
+    note: 'JMHH F90. Games plus a women’s health seminar for Breast Cancer Awareness Month. Wear pink!',
+    who: 'The Wharton and broader Penn community', where: 'JMHH F90', what: 'Games plus a women’s health seminar on breast cancer screening and prevention',
+    why: 'Community, education, and celebration for Breast Cancer Awareness Month',
+    blurb: 'Fearless in Pink brings together community, education, and celebration for Breast Cancer Awareness Month. The evening pairs games and a social atmosphere with a substantive women’s health seminar on breast cancer screening and prevention. Wear pink for bonus points! Open to the Wharton and broader Penn community.' },
+  { title: 'Natural Hair Symposium', committee: 'ce', stage: 5, when: 'Thu, Oct 29, 6:30–7:30 pm', date: '2026-10-29',
+    note: 'JMHH 265. An open conversation about navigating natural hair in professional and social spaces.',
+    where: 'JMHH 265', what: 'An open conversation about navigating natural hair in professional and social spaces',
+    why: 'Interview styling, product recommendations, and connecting with others on a similar journey',
+    blurb: 'Let’s talk about hair! This symposium is an open conversation about navigating natural hair in professional and social spaces. Whether you’re figuring out how to style for an interview, looking for product recommendations, or just want to connect with others on a similar journey, come celebrate your natural hair with STEP CE!' },
+  { title: 'Philly Trek: Five Below', committee: 'ap', stage: 3, when: 'Thu, Nov 5, 12–3 pm', date: '2026-11-05',
+    note: 'For first- and second-years. <a href="https://forms.gle/TNNZDG82aBYcSaUV7" target="_blank">Interest form</a> due Oct 23; spots confirmed by Oct 30.',
+    who: 'First- and second-years', where: 'Five Below, Philadelphia', what: 'A trek to the Philly-headquartered retailer with 2,000+ stores',
+    why: 'See how a fast-growing public company picks products and decides where to grow',
+    blurb: TREKS_BLURB + '\n\nFive Below is the Philly-headquartered retailer with 2,000+ stores. The trek is a look at how a fast-growing public company picks products and decides where to grow.\n\n' + TREKS_FORMS_NOTE,
+    links: [['Five Below interest form', 'https://forms.gle/TNNZDG82aBYcSaUV7']] },
+  { title: 'Philly Trek: TouchPoint', committee: 'ap', stage: 3, when: 'Fri, Nov 6, 9 am–12 pm', date: '2026-11-06',
+    note: 'For first- and second-years. <a href="https://docs.google.com/forms/d/e/1FAIpQLSdhLwgaHzydifQoAvcnmm0qtxrLSR6z-VbhxVQi_o-Z7unwHw/viewform" target="_blank">Interest form</a> due Oct 23; spots confirmed by Oct 30.',
+    who: 'First- and second-years', where: 'TouchPoint, Philadelphia', what: 'A trek to a privately held company (founded 1899) that buys and holds niche engineered-products businesses',
+    why: 'Explore a permanent-capital alternative to private equity up close',
+    blurb: TREKS_BLURB + '\n\nTouchPoint is a privately held company (founded 1899) that buys and holds niche engineered-products businesses for the long run. Basically a permanent-capital alternative to private equity.\n\n' + TREKS_FORMS_NOTE,
+    links: [['TouchPoint interest form', 'https://docs.google.com/forms/d/e/1FAIpQLSdhLwgaHzydifQoAvcnmm0qtxrLSR6z-VbhxVQi_o-Z7unwHw/viewform']] },
+  { title: 'Philly Connections', committee: 'social', stage: 4, when: 'Fri, Nov 6, 1–4:30 pm', date: '2026-11-06',
+    note: 'With Wharton Together. Starts with lunch at 1 pm with Renita Miller.',
+    who: 'STEP cohorts, with E/CDs leading groups', where: 'Around Philly: a nonprofit organization and a Philly landmark', what: 'A day in Philly with your cohort, starting with lunch with Renita Miller',
+    why: 'Explore a Philly nonprofit and landmark and grow closer to your cohort',
+    blurb: 'Join STEP for a day in Philly by exploring a nonprofit organization, visiting an interesting Philly landmark, and growing closer to your fellow cohort members throughout the process. It will start with lunch at 1:00 pm and end around 4:30 pm. Run with Wharton Together.',
+    links: [['Sign up to lead a group', 'https://docs.google.com/forms/d/e/1FAIpQLSdw5H4f7ynF491cG3IeJGtbQ3qI9NZRPxd1CEu4gKcwKpk9Nw/viewform']] },
+  { title: 'Citi Banking Breakfast', committee: 'ap', stage: 5, when: 'Fri, Oct 16, 9:30–10:30 am', date: '2026-10-16',
+    note: 'JMHH 260. For second-years. Catered breakfast with first- and second-year analysts and the Citi recruiting team.',
+    who: 'Second-years', where: 'JMHH 260', what: 'A catered breakfast with Citi analysts and recruiters',
+    why: 'Meet first- and second-year analysts and the Citi recruiting team',
+    blurb: 'Join first- and second-year analysts and the Citi recruiting team over a catered breakfast.' },
+  { title: 'Summer Internship Panel', committee: 'ap', stage: 2, when: 'November', date: '2026-11-30', note: 'With Wharton Council and JWS.',
+    what: 'A panel on summer opportunities, with Wharton Council and JWS' },
+  { title: 'Research Symposium', committee: 'ap', stage: 1, when: 'November', date: '2026-11-30', note: 'Utsav asked A&P to run it.' },
+  { title: 'Etiquette Dinner', committee: 'ap', stage: 2, when: 'This semester', note: 'Finding a date' },
   { title: 'Next Gen Interview Workshop', committee: 'ap', stage: 1, when: 'January' },
   { title: 'Halloween Costume Swap', committee: 'ce', stage: 1, when: 'TBD' },
   { title: 'Day of Service', committee: 'ce', stage: 1, when: 'TBD' },
@@ -429,16 +496,42 @@ if (!live.length) {
 // Future programming
 const progs = PROGRAMS.filter(p => !p.date || new Date(p.date + 'T23:59:59') >= now)
   .sort((a, b) => (a.date || '9999').localeCompare(b.date || '9999'));
-document.getElementById('prog-list').innerHTML = progs.length ? progs.map(p => {
-  const stage = Math.min(Math.max(p.stage, 1), STAGES.length);
-  const bars = STAGES.map((s, i) => `<span class="${i < stage ? 'on' : ''}${i === stage - 1 ? ' now' : ''}">${s}</span>`).join('');
-  const pill = COMMITTEES[p.committee] ? `<span class="pill pill-${p.committee}">${COMMITTEES[p.committee]}</span>` : '';
-  return `<div class="prog-item">
-    <div class="prog-top"><span>${pill}<span class="prog-title">${p.title}</span></span><span class="prog-when">${p.when || ''}</span></div>
+const stageOf = p => Math.min(Math.max(p.stage, 1), STAGES.length);
+const stageBars = p => STAGES.map((s, i) => `<span class="${i < stageOf(p) ? 'on' : ''}${i === stageOf(p) - 1 ? ' now' : ''}">${s}</span>`).join('');
+const committeePill = p => COMMITTEES[p.committee] ? `<span class="pill pill-${p.committee}">${COMMITTEES[p.committee]}</span>` : '';
+const progList = document.getElementById('prog-list');
+progList.innerHTML = progs.length ? progs.map((p, i) => `<div class="prog-item" role="button" tabindex="0" data-i="${i}" aria-haspopup="dialog" aria-label="${p.title}: see details">
+    <div class="prog-top"><span>${committeePill(p)}<span class="prog-title">${p.title}</span></span><span class="prog-when">${p.when || ''}</span></div>
     ${p.note ? `<div class="prog-note">${p.note}</div>` : ''}
-    <div class="stages" aria-label="Stage: ${STAGES[stage - 1]}">${bars}</div>
-  </div>`;
-}).join('') : '<p class="note" style="margin: 0;">Nothing on the books yet.</p>';
+    <div class="stages" aria-label="Stage: ${STAGES[stageOf(p) - 1]}">${stageBars(p)}</div>
+  </div>`).join('') : '<p class="note" style="margin: 0;">Nothing on the books yet.</p>';
+
+// Event details pop-up
+const progDialog = document.getElementById('prog-dialog');
+const escapeText = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const plainNote = p => p.note ? p.note.replace(/<[^>]+>/g, '') : '';
+function openEvent(p) {
+  const row = (label, value) => `<dt>${label}</dt><dd${value ? '' : ' class="missing"'}>${value ? escapeText(value) : 'Not listed yet'}</dd>`;
+  const blurb = p.blurb ? p.blurb.split(/\n\s*\n/).map(par => `<p>${escapeText(par)}</p>`).join('') : '';
+  const links = (p.links || []).map(([label, url]) => `<a class="prog-link" href="${escapeText(url)}" target="_blank" rel="noopener">${escapeText(label)}</a>`).join('');
+  progDialog.querySelector('.prog-dialog-body').innerHTML = `
+    <div class="prog-dialog-head">${committeePill(p)}<h2 id="prog-dialog-title">${escapeText(p.title)}</h2></div>
+    <div class="stages" aria-label="Stage: ${STAGES[stageOf(p) - 1]}">${stageBars(p)}</div>
+    <dl class="prog-facts">
+      ${row('Who', p.who)}${row('What', p.what || plainNote(p))}${row('When', p.when)}${row('Where', p.where)}${row('Why', p.why)}
+    </dl>
+    ${blurb ? `<h3>Details</h3>${blurb}` : ''}
+    ${links ? `<div class="prog-links">${links}</div>` : ''}
+    <p class="prog-dialog-foot">Questions? Ask the ${COMMITTEES[p.committee] || 'event'} committee or anyone on the SLB.</p>`;
+  progDialog.showModal();
+}
+const openFrom = el => { const item = el.closest('.prog-item'); if (item) openEvent(progs[item.dataset.i]); };
+progList.addEventListener('click', e => { if (!e.target.closest('a')) openFrom(e.target); });
+progList.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('prog-item')) { e.preventDefault(); openFrom(e.target); }
+});
+progDialog.querySelector('.prog-dialog-close').addEventListener('click', () => progDialog.close());
+progDialog.addEventListener('click', e => { if (e.target === progDialog) progDialog.close(); }); // click outside the box
 
 // Calendar
 const cal = document.getElementById('cal');
