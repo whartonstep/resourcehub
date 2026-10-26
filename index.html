@@ -370,8 +370,8 @@ const DUE = [
     ['E/CD form', 'https://forms.gle/376YtqqhfKbK4t718'],
     ['Mentee form', 'https://forms.gle/wUu3uP4U8rd2PeSM7']
   ]},
-  { title: 'Sign up to lead a Philly Connections group', hideAfter: '2026-11-05', tag: 'ecd', links: [
-    ['Leader sign-up form', 'https://docs.google.com/forms/d/e/1FAIpQLSdw5H4f7ynF491cG3IeJGtbQ3qI9NZRPxd1CEu4gKcwKpk9Nw/viewform']
+  { title: 'Philly Connections: tell us if you can lead a group (new form, all E/CDs)', hideAfter: '2026-11-05', tag: 'ecd', links: [
+    ['Leader availability form', 'https://docs.google.com/forms/d/e/1FAIpQLSdR7InfIOr-tjiF1Wzg1cqUQGyzedgeFgvZA2ZKGqG3v7VZJw/viewform']
   ]},
   { title: 'Wharton Council recruitment survey (enter to win $10 PennCash)', due: '2026-10-20', tag: 'optional', links: [
     ['Anonymous survey', 'https://wharton.qualtrics.com/jfe/form/SV_8kRkBCav70QgBtc']
@@ -383,6 +383,8 @@ const DUE = [
     ['Register', 'https://wharton.qualtrics.com/jfe/form/SV_eA5zgJA2JXtQ4Dk'],
     ['Questions: email Megan', 'mailto:meganom@wharton.upenn.edu']
   ]},
+  { title: 'Serving Up Success with Wharton Women: panel with women behind four Philly food spots', label: 'Mon, Oct 26, 7–8 pm', hideAfter: '2026-10-26', tag: 'optional', links: [],
+    note: 'JMHH F45. No registration listed.' },
   { title: 'Become a Peer Wellness Coach (sophomores and up)', tag: 'optional', links: [
     ['Apply on Workday', 'https://www.myworkday.com/upenn/d/inst/15$392530/9925$91434.htmld']
   ]}
@@ -432,7 +434,7 @@ const PROGRAMS = [
     who: 'STEP cohorts, with E/CDs leading groups', where: 'Starts in JMHH 270, then around Philly: a nonprofit organization and a Philly landmark', what: 'A day in Philly with your cohort, starting with lunch with Renita Miller',
     why: 'Explore a Philly nonprofit and landmark and grow closer to your cohort',
     blurb: 'Join STEP for a day in Philly by exploring a nonprofit organization, visiting an interesting Philly landmark, and growing closer to your fellow cohort members throughout the process. It will start with lunch at 1:00 pm and end around 4:30 pm. Run with Wharton Together.',
-    links: [['Sign up to lead a group', 'https://docs.google.com/forms/d/e/1FAIpQLSdw5H4f7ynF491cG3IeJGtbQ3qI9NZRPxd1CEu4gKcwKpk9Nw/viewform']] },
+    links: [['Leader availability form (E/CDs)', 'https://docs.google.com/forms/d/e/1FAIpQLSdR7InfIOr-tjiF1Wzg1cqUQGyzedgeFgvZA2ZKGqG3v7VZJw/viewform']] },
   { title: 'Citi Banking Breakfast', committee: 'ap', stage: 5, when: 'Fri, Oct 16, 9:30–10:30 am', date: '2026-10-16',
     note: 'JMHH 260. For second-years. Catered breakfast with first- and second-year analysts and the Citi recruiting team.',
     who: 'Second-years', where: 'JMHH 260', what: 'A catered breakfast with Citi analysts and recruiters',
@@ -486,7 +488,7 @@ if (!live.length) {
       : (x.label || 'Open now');
     const links = x.links.length
       ? x.links.map(l => `<a href="${l[1]}" target="_blank">${l[0]}</a>`).join('')
-      : '<span class="pending">link coming soon</span>';
+      : `<span class="pending">${x.note || 'link coming soon'}</span>`;
     const pill = PILLS[x.tag] ? `<span class="pill pill-${x.tag}">${PILLS[x.tag]}</span>` : '';
     return `<div class="due-item"><div class="due-top"><span>${pill}${x.title}</span><span class="due-date">${date}</span></div><div class="due-links">${links}</div></div>`;
   }).join('');
