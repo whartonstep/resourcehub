@@ -38,6 +38,7 @@
     .row:last-child { border-bottom: none; }
     .meta { font-size: 12px; color: #666; text-align: right; flex-shrink: 0; }
     .note { font-size: 13px; color: #555; margin-bottom: 8px; }
+    .idea-where { display: block; font-size: 12px; color: #666; }
     .pending { font-size: 12px; color: #555; font-style: italic; }
 
     .big { font-size: 22px; font-weight: 700; margin: 2px 0; }
@@ -276,6 +277,10 @@
       <div class="row"><a href="https://nso.upenn.edu/programs/penn-mentor-meals-program/" target="_blank">Mentor Meals</a><span class="meta">Reserve in advance</span></div>
       <div class="row"><a href="https://undergrad-inside.wharton.upenn.edu/calendars/" target="_blank">Wharton calendars and center newsletters</a><span class="meta">Website</span></div>
     </div>
+    <div id="pod-ideas-wrap">
+      <div class="cell-tag" style="border-top: 1px solid #000;">Examples</div>
+      <div class="cell-body" id="pod-ideas"></div>
+    </div>
   </section>
 
   <section class="cell" style="grid-area: ask;">
@@ -383,11 +388,19 @@ const DUE = [
     ['Register', 'https://wharton.qualtrics.com/jfe/form/SV_eA5zgJA2JXtQ4Dk'],
     ['Questions: email Megan', 'mailto:meganom@wharton.upenn.edu']
   ]},
-  { title: 'Serving Up Success with Wharton Women: panel with women behind four Philly food spots', label: 'Mon, Oct 26, 7–8 pm', hideAfter: '2026-10-26', tag: 'optional', links: [],
-    note: 'JMHH F45. No registration listed.' },
   { title: 'Become a Peer Wellness Coach (sophomores and up)', tag: 'optional', links: [
     ['Apply on Workday', 'https://www.myworkday.com/upenn/d/inst/15$392530/9925$91434.htmld']
   ]}
+];
+
+// Pod Hangouts > Examples: campus events E/CDs could bring their pod to. Each one hides the day after its date
+// [title, date (YYYY-MM-DD), when, where, link (or '')]
+const POD_IDEAS = [
+  ['Serving Up Success with Wharton Women', '2026-10-26', 'Mon, Oct 26, 7–8 pm', 'JMHH F45. Panel with the women behind four Philly food spots', ''],
+  ['Speakeasy Open Mic Night', '2026-10-28', 'Wed, Oct 28, 7–8 pm', 'Kelly Writers House', 'https://ulife.vpul.upenn.edu/calendar/view/speakeasy-open-mic-night/5867/'],
+  ['Halloween @GIC: No Tricks, Just Treats!', '2026-10-30', 'Fri, Oct 30, 3–5 pm', 'Greenfield Intercultural Center', 'https://ulife.vpul.upenn.edu/calendar/view/halloween-gic-no-tricks-just-treats/5925/'],
+  ['Spooktacular Sends: Halloween at the Wall', '2026-10-30', 'Fri, Oct 30, 4:30–8:30 pm', 'Climbing wall, costume raffle', 'https://recreationwebportal.dria.upenn.edu/Program/GetProgramDetails?courseId=c5b55f3c-17a8-4ddc-94e0-247960a350a9'],
+  ['Day Hike at Fort Washington State Park', '2026-10-31', 'Sat, Oct 31', 'Penn Recreation outdoor trip', 'https://recreation.upenn.edu/sports/2025/3/18/outdoor-trips.aspx']
 ];
 
 const PILLS = { ecd: 'E/CDs', board: 'Board and committees', all: 'Everyone', optional: 'Optional' };
@@ -488,7 +501,7 @@ if (!live.length) {
       : (x.label || 'Open now');
     const links = x.links.length
       ? x.links.map(l => `<a href="${l[1]}" target="_blank">${l[0]}</a>`).join('')
-      : `<span class="pending">${x.note || 'link coming soon'}</span>`;
+      : '<span class="pending">link coming soon</span>';
     const pill = PILLS[x.tag] ? `<span class="pill pill-${x.tag}">${PILLS[x.tag]}</span>` : '';
     return `<div class="due-item"><div class="due-top"><span>${pill}${x.title}</span><span class="due-date">${date}</span></div><div class="due-links">${links}</div></div>`;
   }).join('');
@@ -510,6 +523,15 @@ progList.innerHTML = progs.length ? progs.map((p, i) => `<div class="prog-item" 
 // Event details pop-up
 const progDialog = document.getElementById('prog-dialog');
 const escapeText = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const podIdeas = POD_IDEAS.filter(x => new Date(x[1] + 'T23:59:59') >= now);
+if (podIdeas.length) {
+  document.getElementById('pod-ideas').innerHTML = podIdeas.map(([title, , when, where, link]) =>
+    `<div class="row"><span>${link ? `<a href="${link}" target="_blank">${title}</a>` : title}<span class="idea-where">${where}</span></span><span class="meta">${when}</span></div>`
+  ).join('');
+} else {
+  document.getElementById('pod-ideas-wrap').hidden = true;
+}
+
 const plainNote = p => p.note ? p.note.replace(/<[^>]+>/g, '') : '';
 function openEvent(p) {
   const row = (label, value) => `<dt>${label}</dt><dd${value ? '' : ' class="missing"'}>${value ? escapeText(value) : 'Not listed yet'}</dd>`;
