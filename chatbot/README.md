@@ -14,7 +14,7 @@ The "Ask STEP" chat box on the resource hub talks to this small Cloudflare Worke
 2. **Log in from Terminal** (opens a browser window to approve):
 
    ```bash
-   cd ~/Documents/GitHub/stepresourcehub/chatbot
+   cd ~/Documents/GitHub/resourcehub/chatbot
    npx wrangler login
    ```
 
