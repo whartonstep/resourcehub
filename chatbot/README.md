@@ -34,7 +34,7 @@ The "Ask STEP" chat box on the resource hub talks to this small Cloudflare Worke
 
 ## Safeguards
 
-- Only pages on `nicolasdorazio.github.io` (and `localhost` for testing) can use the bot. Change `ALLOWED_ORIGINS` in `wrangler.jsonc` if the hub moves.
+- Only pages on `whartonstep.github.io` (and `localhost` for testing) can use the bot. Change `ALLOWED_ORIGINS` in `wrangler.jsonc` if the hub moves.
 - At most 8 questions a minute per person.
 - It only sees what's on the public hub page. Don't put private student information on the hub.
 - Usage: Cloudflare dashboard → AI → Workers AI.
