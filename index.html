@@ -392,7 +392,7 @@ const DUE = [
   { title: 'Philly Connections: tell us if you can lead a group (new form, all E/CDs)', hideAfter: '2026-11-05', tag: 'ecd', links: [
     ['Leader availability form', 'https://docs.google.com/forms/d/e/1FAIpQLSdR7InfIOr-tjiF1Wzg1cqUQGyzedgeFgvZA2ZKGqG3v7VZJw/viewform']
   ]},
-  { title: 'Sign up to lead the Philly Trek to Five Below (Thu, Nov 5)', hideAfter: '2026-11-04', tag: 'ecd', links: [] },
+  { title: 'Sign up to lead the Philly Trek to Five Below (Thu, Nov 5)', hideAfter: '2026-11-04', tag: 'ecd', links: [], pending: 'Text Joel' },
   { title: 'Wharton Council recruitment survey (enter to win $10 PennCash)', due: '2026-10-20', tag: 'optional', links: [
     ['Anonymous survey', 'https://wharton.qualtrics.com/jfe/form/SV_8kRkBCav70QgBtc']
   ]},
@@ -446,7 +446,7 @@ const PROGRAMS = [
     why: 'Community, education, and celebration for Breast Cancer Awareness Month',
     blurb: 'Fearless in Pink brings together community, education, and celebration for Breast Cancer Awareness Month. The evening pairs games and a social atmosphere with a substantive women’s health seminar on breast cancer screening and prevention. Wear pink for bonus points! Open to the Wharton and broader Penn community.' },
   { title: 'Philly Trek: Five Below', committee: 'ap', stage: 5, when: 'Thu, Nov 5, 12–3 pm', date: '2026-11-05',
-    note: 'For first- and second-years. <a href="https://forms.gle/TNNZDG82aBYcSaUV7" target="_blank">Interest form</a> due Oct 23; spots confirmed by Oct 30.',
+    note: 'For first- and second-years. Final attendee list out by Wed, Nov 4.',
     who: 'First- and second-years', where: 'Five Below, Philadelphia', what: 'A trek to the Philly-headquartered retailer with 2,000+ stores',
     why: 'See how a fast-growing public company picks products and decides where to grow',
     blurb: TREKS_BLURB + '\n\nFive Below is the Philly-headquartered retailer with 2,000+ stores. The trek is a look at how a fast-growing public company picks products and decides where to grow.\n\n' + TREKS_FORMS_NOTE,
@@ -468,16 +468,27 @@ const PROGRAMS = [
     who: 'Second-years', where: 'JMHH 260', what: 'A catered breakfast with Citi analysts and recruiters',
     why: 'Meet first- and second-year analysts and the Citi recruiting team',
     blurb: 'Join first- and second-year analysts and the Citi recruiting team over a catered breakfast.' },
-  { title: 'Summer Internship Panel', committee: 'ap', stage: 2, when: 'November, TBD', date: '2026-11-30', note: 'With Wharton Council and JWS.',
-    what: 'A panel on summer opportunities, with Wharton Council and JWS' },
+  { title: 'First-Year Summer Panel', committee: 'ap', stage: 3, when: 'Wed, Nov 18', date: '2026-11-18', note: 'For first-years. With Wharton Council and JWS.',
+    who: 'First-years', what: 'A panel on summer opportunities for first-years, run by JWS, Wharton Council, and STEP',
+    why: 'Hear how to think about and find a summer opportunity after your first year' },
+  { title: 'CE First-Year Event (name TBD)', committee: 'ce', stage: 3, when: 'Tue, Nov 17', date: '2026-11-17',
+    note: 'For first-years. A smaller event with a values bridge piece; speaker TBD.',
+    who: 'First-years', what: 'A smaller-scale CE event with a values bridge piece (speaker TBD)',
+    why: 'A chance for first-years to get involved with CE in a smaller setting' },
   { title: 'Research Symposium', committee: 'ap', stage: 1, when: 'November', date: '2026-11-30', note: 'Utsav asked A&P to run it.' },
-  { title: 'Etiquette Dinner', committee: 'ap', stage: 3, when: 'Mon, Nov 16, 6–8 pm', date: '2026-11-16',
-    note: 'For everyone. A lesson in professional dining etiquette.',
-    who: 'Everyone', what: 'A lesson on how to eat properly in professional settings, like which fork to use',
+  { title: 'Professional Dining 101', committee: 'ap', stage: 4, when: 'Mon, Nov 16, 6–8 pm', date: '2026-11-16',
+    note: 'JMHH 8th floor. For everyone, capped at 100 people. A lesson in professional dining etiquette.',
+    who: 'Everyone (up to 100 people)', where: 'JMHH, 8th floor', what: 'A lesson on how to eat properly in professional settings, like which fork to use',
     why: 'So you’re prepared for meals with clients, your boss, or anyone in a professional setting' },
   { title: 'Next Gen Interview Workshop', committee: 'ap', stage: 1, when: 'January' },
   { title: 'Halloween Costume Swap', committee: 'ce', stage: 1, when: 'TBD' },
-  { title: 'Day of Service', committee: 'ce', stage: 1, when: 'TBD' },
+  { title: 'Day of Service', committee: 'ce', stage: 3, when: 'Fri, Dec 4', date: '2026-12-04',
+    note: 'Service at the same organizations cohorts visit during Philly Connections.',
+    where: 'The same organizations cohorts visit during Philly Connections',
+    what: 'A day of community service with STEP CE at the organizations from Philly Connections' },
+  { title: 'Alumni Brunch at Homecoming', committee: 'mentorship', stage: 3, when: 'Sat, Nov 14, time TBD', date: '2026-11-14',
+    note: 'Homecoming. Renata’s (pending).',
+    where: 'Renata’s (pending)', what: 'A Homecoming brunch with STEP alumni' },
   { title: 'Senior Tech Tutoring', committee: 'ce', stage: 1, when: 'TBD' }
 ];
 
@@ -516,7 +527,7 @@ if (!live.length) {
       : (x.label || 'Open now');
     const links = x.links.length
       ? x.links.map(l => `<a href="${l[1]}" target="_blank">${l[0]}</a>`).join('')
-      : '<span class="pending">link coming soon</span>';
+      : `<span class="pending">${x.pending || 'link coming soon'}</span>`;
     const pill = PILLS[x.tag] ? `<span class="pill pill-${x.tag}">${PILLS[x.tag]}</span>` : '';
     return `<div class="due-item"><div class="due-top"><span>${pill}${x.title}</span><span class="due-date">${date}</span></div><div class="due-links">${links}</div></div>`;
   }).join('');
