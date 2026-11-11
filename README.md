@@ -4,18 +4,21 @@ A one-page site for STEP E/CDs, the board, and committees, with a few sections f
 
 The site is plain HTML hosted on GitHub Pages. There's no build step: edit, commit, and push to `main`, and the live site updates in a minute or two.
 
+The events also power a public events page at [whartonstep.github.io](https://whartonstep.github.io) (repo: `whartonstep/whartonstep.github.io`). That page loads `events.js` from this site, so editing an event here updates both. You never need to touch the public repo to change an event.
+
 ## What's in the repo
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The whole site: layout, styles, content, and scripts |
+| `index.html` | The hub: layout, styles, content, and scripts |
+| `events.js` | The event list, shared with the public events page |
 | `images/` | Logo, favicon, touch icon, and event flyers |
 | `po-instructions-for-vendors.pdf` | PO instructions linked from Run an Event |
 | `chatbot/` | The "Ask STEP" bot, a Cloudflare Worker. See [chatbot/README.md](chatbot/README.md) |
 
 ## Updating content
 
-Almost everything you'll change is in the `<script>` block near the bottom of `index.html`.
+Events are in `events.js`. Almost everything else you'll change is in the `<script>` block near the bottom of `index.html`.
 
 ### Settings (`CONFIG`)
 
@@ -42,7 +45,7 @@ One entry per to-do:
 - `links`: `[label, url]` pairs. If there's no link yet, leave `links: []` and set `pending` (for example `'Text Joel'`).
 - Only add items that E/CDs, the board, or upperclassmen have to act on themselves. Registrations for first-year events go on the event, not here.
 
-### Future Programming (`PROGRAMS`)
+### Future Programming (`PROGRAMS` in `events.js`)
 
 One entry per event. Past events hide on their own after their `date`. Clicking an event opens a pop-up with its details.
 
@@ -61,6 +64,12 @@ One entry per event. Past events hide on their own after their `date`. Clicking 
 - `date` is used for sorting and hiding. Leave it out for events with no date yet; they sort to the bottom.
 - Everything after `when` is optional. Any of the five Ws you leave out shows "Not listed yet" in the pop-up.
 - For a flyer, put the image in `images/` and add `image`.
+
+**What the public page shows:** events at stage 3 (Date set) or later that have a `date`. It shows the title, `when`, the five Ws, `blurb`, flyer, and links. It never shows `note` or the stage bar.
+
+- To keep an event off the public page, add `public: false`.
+- To keep a link on the hub only (for example an E/CD form), add `'internal'` as a third item: `['Leader form', 'https://...', 'internal']`.
+- `note` can mention internal details, since it only appears on the hub. Write the five Ws and `blurb` for a public audience.
 
 ### Other sections
 

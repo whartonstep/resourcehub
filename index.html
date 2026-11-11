@@ -375,6 +375,7 @@
   <p class="chat-note">AI answers can be wrong. Double-check the hub or ask the board.</p>
 </section>
 
+<script src="events.js"></script>
 <script>
 // ---- Settings: fill these in, everything else updates itself ----
 const CONFIG = {
@@ -426,93 +427,6 @@ const PILLS = { ecd: 'E/CDs', board: 'Board and committees', all: 'Everyone', op
 // when: what shows on the right. date (optional, YYYY-MM-DD): sorts the list and hides the item the day after
 // note: short line on the card. Clicking an event opens a pop-up with who / what / where / why (any left out show "Not listed yet"),
 // plus blurb (the full description; blank lines start new paragraphs) and links ([label, url] pairs)
-const STAGES = ['Idea', 'Planning', 'Date set', 'Location set', 'Finalized'];
-const COMMITTEES = { ap: 'A&amp;P', social: 'Social', ce: 'CE', mentorship: 'Mentorship', marketing: 'Marketing', internal: 'Internal', directors: 'Directors' };
-const TREKS_BLURB = 'Curious what it’s really like inside a 100+ year old holding company or a fast-growing Philly retailer? Pick your trek (or sign up for both!) for a chance to explore TouchPoint or Five Below up close and meet the people behind the business.';
-const TREKS_FORMS_NOTE = 'These forms are interest only, so filling one out doesn’t guarantee a spot. Forms due October 23, and spots will be confirmed by October 30.';
-const PROGRAMS = [
-  { title: 'Blackstone Office Hours', committee: 'ap', stage: 5, when: 'Wed, Oct 14, 6–7 pm', date: '2026-10-14',
-    note: 'JMHH F45. For second-years. RJ Sylak, a former Blackstone intern who received a return offer, talks through his internship and how he approached BX recruiting. Bring questions!',
-    who: 'Second-years', where: 'JMHH F45', what: 'Office hours on the Blackstone internship and BX recruiting',
-    why: 'Hear how a former Blackstone intern with a return offer approached recruiting',
-    blurb: 'RJ Sylak, a former Blackstone intern who received a return offer, will talk through his internship experience and how he approached BX recruiting. Bring questions!' },
-  { title: 'Introduction to Service', committee: 'ce', stage: 5, when: 'Wed, Oct 14, 6 pm', date: '2026-10-14',
-    note: 'JMHH F50. Hear from Civic House, Nonprofit Connect, the Netter Center, and CWiC about service opportunities at Penn.',
-    where: 'JMHH F50', what: 'An intro to service opportunities at Penn',
-    why: 'Learn the many ways to get involved with Penn’s community',
-    blurb: 'Join STEP CE to learn about the many ways to get involved with Penn’s community. Hear from partner organizations including Civic House, Nonprofit Connect, the Netter Center, and CWiC, and discover on-campus service opportunities available!' },
-  { title: 'Fearless in Pink', committee: 'ce', stage: 5, when: 'Thu, Oct 22, 6:30 pm', date: '2026-10-22',
-    note: 'JMHH F90. Games plus a women’s health seminar for Breast Cancer Awareness Month. Wear pink!',
-    who: 'The Wharton and broader Penn community', where: 'JMHH F90', what: 'Games plus a women’s health seminar on breast cancer screening and prevention',
-    why: 'Community, education, and celebration for Breast Cancer Awareness Month',
-    blurb: 'Fearless in Pink brings together community, education, and celebration for Breast Cancer Awareness Month. The evening pairs games and a social atmosphere with a substantive women’s health seminar on breast cancer screening and prevention. Wear pink for bonus points! Open to the Wharton and broader Penn community.' },
-  { title: 'Philly Trek: Five Below', committee: 'ap', stage: 5, when: 'Thu, Nov 5, 12–3 pm', date: '2026-11-05',
-    note: 'For first- and second-years. Final attendee list out by Wed, Nov 4.',
-    who: 'First- and second-years', where: 'Five Below, Philadelphia', what: 'A trek to the Philly-headquartered retailer with 2,000+ stores',
-    why: 'See how a fast-growing public company picks products and decides where to grow',
-    blurb: TREKS_BLURB + '\n\nFive Below is the Philly-headquartered retailer with 2,000+ stores. The trek is a look at how a fast-growing public company picks products and decides where to grow.\n\n' + TREKS_FORMS_NOTE,
-    links: [['Five Below interest form', 'https://forms.gle/TNNZDG82aBYcSaUV7']] },
-  { title: 'Philly Trek: TouchPoint', committee: 'ap', stage: 5, when: 'Fri, Nov 6, 9 am–12 pm', date: '2026-11-06',
-    note: 'For first- and second-years. <a href="https://docs.google.com/forms/d/e/1FAIpQLSdhLwgaHzydifQoAvcnmm0qtxrLSR6z-VbhxVQi_o-Z7unwHw/viewform" target="_blank">Interest form</a> due Oct 23; spots confirmed by Oct 30.',
-    who: 'First- and second-years', where: 'TouchPoint, Philadelphia', what: 'A trek to a privately held company (founded 1899) that buys and holds niche engineered-products businesses',
-    why: 'Explore a permanent-capital alternative to private equity up close',
-    blurb: TREKS_BLURB + '\n\nTouchPoint is a privately held company (founded 1899) that buys and holds niche engineered-products businesses for the long run. Basically a permanent-capital alternative to private equity.\n\n' + TREKS_FORMS_NOTE,
-    links: [['TouchPoint interest form', 'https://docs.google.com/forms/d/e/1FAIpQLSdhLwgaHzydifQoAvcnmm0qtxrLSR6z-VbhxVQi_o-Z7unwHw/viewform']] },
-  { title: 'Philly Connections', committee: 'social', stage: 5, when: 'Fri, Nov 6, 1–4:30 pm', date: '2026-11-06',
-    note: 'JMHH 270. With Wharton Together. Starts with lunch at 1 pm with Renita Miller.',
-    who: 'STEP cohorts, with E/CDs leading groups', where: 'Starts in JMHH 270, then around Philly: a nonprofit organization and a Philly landmark', what: 'A day in Philly with your cohort, starting with lunch with Renita Miller',
-    why: 'Explore a Philly nonprofit and landmark and grow closer to your cohort',
-    blurb: 'Join STEP for a day in Philly by exploring a nonprofit organization, visiting an interesting Philly landmark, and growing closer to your fellow cohort members throughout the process. It will start with lunch at 1:00 pm and end around 4:30 pm. Run with Wharton Together.',
-    links: [['Leader availability form (E/CDs)', 'https://docs.google.com/forms/d/e/1FAIpQLSdR7InfIOr-tjiF1Wzg1cqUQGyzedgeFgvZA2ZKGqG3v7VZJw/viewform']] },
-  { title: 'Citi Banking Breakfast', committee: 'ap', stage: 5, when: 'Fri, Oct 16, 9:30–10:30 am', date: '2026-10-16',
-    note: 'JMHH 260. For second-years. Catered breakfast with first- and second-year analysts and the Citi recruiting team.',
-    who: 'Second-years', where: 'JMHH 260', what: 'A catered breakfast with Citi analysts and recruiters',
-    why: 'Meet first- and second-year analysts and the Citi recruiting team',
-    blurb: 'Join first- and second-year analysts and the Citi recruiting team over a catered breakfast.' },
-  { title: 'First-Year Summer Panel', committee: 'ap', stage: 5, when: 'Wed, Nov 18, 5:15–6:15 pm', date: '2026-11-18', note: 'JMHH F85. For first- and second-years. With Wharton Council and JWS.',
-    who: 'First- and second-years', where: 'JMHH F85',
-    what: 'A panel on ways to spend your summer, from research programs like GRIP and SIRE to internships in fields like tech and finance, with a live Q&A',
-    why: 'Hear firsthand from students who have done these programs and get practical tips on applications and deadlines',
-    blurb: 'The First-Years Summer Opportunities Panel is an event hosted in collaboration with Wharton Council to allow first and second year students to explore ways to spend their summer, including research programs like GRIP and SIRE and traditional internships across fields like tech and finance.\n\nJoin us on November 18th from 5:15 PM to 6:15 PM to hear firsthand from students who have done these programs, get practical tips on applications and deadlines, and ask your questions in a live Q&A. Whether you have a clear plan or no idea where to start, this panel is a great first step toward a meaningful summer.',
-    image: ['images/summer-opportunities-101.webp', 'Flyer: Wharton Council, STEP, and JWS present Wharton Summer Opportunities 101. Explore what your freshman and sophomore summers can be. Hear upperclassmen share real experiences across GRIP, SIRE, WRAP, finance, tech, consulting, healthcare, government, and more. Wed, Nov 18, 5:15–6:15 pm, JMHH F85.'] },
-  { title: 'Explore & Apply: Crafting Your Wharton Journey', committee: 'ce', stage: 5, when: 'Tue, Nov 17, 6:30–7:30 pm', date: '2026-11-17',
-    note: 'JMHH G50. Everyone welcome. A first-year-led panel on choosing events, programs, and classes. Bao buns provided. <a href="https://groups.wharton.upenn.edu/w/_/_/events/d2hhcnRvbjpFdmVudDoxMjY0MDE=" target="_blank">RSVP</a>.',
-    who: 'Everyone is welcome', where: 'JMHH G50',
-    what: 'A first-year-led panel with WH 1010/2010 TAs, a peer advisor, an SLB member, and a first-year moderator',
-    why: 'Choose the events, programs, and classes that fit your personal values, and build community around a shared experience',
-    blurb: '“There are so many great events, but I don’t know which ones to go to” is a feeling every first-year student knows. This panel brings together WH 1010/2010 TAs, a peer advisor, a Student Leadership Board (SLB) member, and a first-year moderator: all students who are uniquely suited to help first-years choose the events, programs, and classes that fit their personal values.\n\nThrough this first-year-led discussion, students will find their own direction and build community around a shared, and sometimes vulnerable, experience. Everyone is welcome, and bao buns will be provided!',
-    links: [['RSVP', 'https://groups.wharton.upenn.edu/w/_/_/events/d2hhcnRvbjpFdmVudDoxMjY0MDE=']] },
-  { title: 'Research Symposium', committee: 'ap', stage: 1, when: 'November', date: '2026-11-30', note: 'Utsav asked A&P to run it.' },
-  { title: 'Professional Dining 101', committee: 'ap', stage: 5, when: 'Mon, Nov 16, 6–8 pm', date: '2026-11-16',
-    note: 'JMHH 8th floor. Primarily for first-years; space is limited. Hands-on dining etiquette practice with a mocktail reception and fall-themed meal. <a href="https://groups.wharton.upenn.edu/w/_/_/events/d2hhcnRvbjpFdmVudDoxMjYyNTA=" target="_blank">Register</a> by Wed, Nov 11.',
-    who: 'Primarily first-years (space is limited)', where: 'Huntsman Hall (JMHH), 8th floor',
-    what: 'Hands-on practice in professional dining etiquette, led by Dr. Janis Moore Campbell of Temple’s Fox School of Business',
-    why: 'So you’re prepared for meals with clients, your boss, or anyone in a professional setting',
-    blurb: 'Feeling uncertain about navigating professional events? Join us for an evening of hands-on practice in professional dining etiquette, facilitated by Dr. Janis Moore Campbell of Temple’s Fox School of Business.\n\nThe evening will begin with a mocktail reception and continue with a fall-themed meal. Students will learn and practice making introductions, engaging in networking conversations, navigating a reception, observing dining etiquette, and participating in professional dinner conversations.\n\nRegister by November 11. Space is limited.',
-    links: [['Register (by Nov 11)', 'https://groups.wharton.upenn.edu/w/_/_/events/d2hhcnRvbjpFdmVudDoxMjYyNTA=']],
-    image: ['images/professional-dining-101.webp', 'Flyer: Professional Dining 101, Monday, Nov. 16, 6–8 pm, JMHH 8th Floor. Join STEP for a night of professional etiquette, gratitude, and connection!'] },
-  { title: 'Next Gen Interview Workshop', committee: 'ap', stage: 1, when: 'January' },
-  { title: 'Day of Service', committee: 'ce', stage: 3, when: 'Fri, Dec 4', date: '2026-12-04',
-    note: 'Service at the same organizations cohorts visit during Philly Connections.',
-    where: 'The same organizations cohorts visit during Philly Connections',
-    what: 'A day of community service with STEP CE at the organizations from Philly Connections' },
-  { title: 'Hoco Alumni Brunch', committee: 'mentorship', stage: 5, when: 'Sat, Nov 14, 10 am–12 pm', date: '2026-11-14',
-    note: 'Renata’s Kitchen. Not for first-years. <a href="https://forms.gle/BY2p5kjN7HZZ7q7D9" target="_blank">RSVP</a> by Sat, Nov 7; first come, first served. You’ll get a confirmation email or be placed on the waitlist before the event.',
-    who: 'Current E/CDs, committee members, former STEP students and cohort leaders (Classes of 2027, 2028, and 2029), and alumni (not for first-years)',
-    where: 'Renata’s Kitchen, 3940 Baltimore Ave, Philadelphia, PA 19104', what: 'STEP’s 2nd annual Alumni Homecoming Brunch',
-    why: 'Reconnect with familiar faces, meet alumni, and celebrate the STEP community',
-    blurb: 'Join the Mentorship Committee for STEP’s 2nd annual Alumni Homecoming Brunch to reconnect with familiar faces, meet alumni, and celebrate the STEP community. Open to current E/CDs, committee members, former STEP students and cohort leaders in the Classes of 2027, 2028, and 2029, and alumni. It is not for first-years. RSVP by Saturday, November 7. Spots are first come, first served, and you’ll get a confirmation email or be placed on the waitlist before the event.',
-    links: [['RSVP form', 'https://forms.gle/BY2p5kjN7HZZ7q7D9']] },
-  { title: 'Winter Whartonland', committee: 'social', stage: 4, when: 'Sat, Dec 5', date: '2026-12-05',
-    note: 'Ice skating and food at Penn’s Landing. To participate: 2 STEP class-wide events, or 1 class-wide and 1 cohort/pod event, between Nov 1 and Nov 25.',
-    who: 'STEP members who attend two class-wide events, or one class-wide and one cohort/pod event, between Nov 1 and Nov 25',
-    where: 'Penn’s Landing Ice Rink',
-    what: 'Ice skating, with food provided by STEP',
-    why: 'Bond and destress before finals',
-    blurb: 'Join STEP for Winter Whartonland on December 5 at the Penn’s Landing Ice Rink! Bond and destress before finals with ice skating and food provided by STEP.\n\nIn order to participate in Winter Whartonland, you must participate in either two STEP class-wide events or one STEP class-wide event and one cohort/pod event, between Nov. 1 and Nov. 25.\n\nThe November class-wide events are Philly Connections (November 6), Philadelphia Career Treks (November 6), Professional Dining 101 (November 16), Explore & Apply: Crafting Your Wharton Journey (November 17), and the First-Year Opportunities Panel (November 18).' },
-  { title: 'Senior Tech Tutoring', committee: 'ce', stage: 1, when: 'TBD' }
-];
-
 const COHORT_COLORS = {
   Yen: '#FEEC01', Euro: '#40B4E3', Rupee: '#8A1E11', Peso: '#0559D5', Dollar: '#BFBFBF',
   Yuan: '#4E36A4', Dinar: '#02563F', Rand: '#B90913', Shekel: '#63D451', Franc: '#FEA025'

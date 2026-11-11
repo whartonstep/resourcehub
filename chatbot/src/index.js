@@ -39,7 +39,13 @@ async function hubContext(env) {
   const script = html.slice(scriptStart);
   const dataStart = script.indexOf('const TOWNHALLS');
   const dataEnd = script.indexOf('const now');
-  const data = dataStart >= 0 && dataEnd > dataStart ? script.slice(dataStart, dataEnd).trim() : '';
+  let data = dataStart >= 0 && dataEnd > dataStart ? script.slice(dataStart, dataEnd).trim() : '';
+
+  // Events live in events.js next to the hub page (shared with the public events site)
+  try {
+    const r = await fetch(new URL('events.js', env.HUB_URL), { cf: { cacheTtl: 300 } });
+    if (r.ok) data = (await r.text()).trim() + '\n\n' + data;
+  } catch (e) { /* answer from the rest of the hub */ }
 
   // Live Cohort Cup totals, if the tracker is reachable
   let standings = '';
