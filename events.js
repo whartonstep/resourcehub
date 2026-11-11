@@ -76,7 +76,7 @@ const PROGRAMS = [
     note: 'Service at the same organizations cohorts visit during Philly Connections.',
     where: 'The same organizations cohorts visit during Philly Connections',
     what: 'A day of community service with STEP CE at the organizations from Philly Connections' },
-  { title: 'Hoco Alumni Brunch', committee: 'mentorship', stage: 5, when: 'Sat, Nov 14, 10 am–12 pm', date: '2026-11-14',
+  { title: 'Hoco Alumni Brunch', committee: 'mentorship', stage: 5, public: false, when: 'Sat, Nov 14, 10 am–12 pm', date: '2026-11-14',
     note: 'Renata’s Kitchen. Not for first-years. <a href="https://forms.gle/BY2p5kjN7HZZ7q7D9" target="_blank">RSVP</a> by Sat, Nov 7; first come, first served. You’ll get a confirmation email or be placed on the waitlist before the event.',
     who: 'Current E/CDs, committee members, former STEP students and cohort leaders (Classes of 2027, 2028, and 2029), and alumni (not for first-years)',
     where: 'Renata’s Kitchen, 3940 Baltimore Ave, Philadelphia, PA 19104', what: 'STEP’s 2nd annual Alumni Homecoming Brunch',
