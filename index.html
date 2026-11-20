@@ -22,11 +22,9 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       grid-template-areas:
         "th    due   due"
-        "files due   due"
         "cal   cal   prog"
-        "pod   pod   lad"
-        "pod   pod   evt"
-        "pod   pod   promo";
+        "evt   lad   pod"
+        "evt   files promo";
     }
     .main, .aside, .cal-row { display: contents; }
     .cell { border-right: 1px solid #000; border-bottom: 1px solid #000; display: flex; flex-direction: column; min-width: 0; }
@@ -116,8 +114,6 @@
     .cal-body { display: flex; flex-direction: column; }
     #cal { flex: 1; display: flex; flex-direction: column; }
     .cal-frame { width: 100%; flex: 1; min-height: 520px; border: 1px solid #e8e8e8; }
-    .pod-body { display: flex; flex-direction: column; }
-    .pod-frame { width: 100%; flex: 1; min-height: 560px; border: 1px solid #e8e8e8; }
     .cal-empty { height: 520px; background: #f6f8fb; border: 1px dashed #B5D4F4; display: flex; align-items: center; justify-content: center; color: #555; font-size: 13px; text-align: center; padding: 16px; }
 
     .cal-legend { display: flex; gap: 18px; font-size: 13px; color: #555; padding: 8px 0 2px; align-items: center; }
@@ -156,12 +152,11 @@
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         grid-template-areas:
           "th    due"
-          "lad   lad"
           "cal   cal"
-          "prog  prog"
-          "pod   pod"
-          "evt   promo"
-          "evt   files";
+          "prog  lad"
+          "evt   pod"
+          "evt   files"
+          "promo promo";
       }
     }
     @media (max-width: 700px) {
@@ -280,17 +275,12 @@
 
   <section class="cell" style="grid-area: pod;">
     <div class="cell-head">Pod Hangouts (For E/CDs)</div>
-    <div class="cell-body" style="flex: none;">
+    <div class="cell-body">
       <p class="note">Each month: one pod or cohort activity, one individual check-in, and one non-STEP campus event with your cohort. Attend STEP activities to the best of your ability with your cohort and/or pod. Market activities even if you cannot attend.</p>
       <div class="row"><a href="https://docs.google.com/forms/d/e/1FAIpQLScwN8TsHiMWEZjTMp1zXAf3xvLiCRVGYwHSY0S1Hz179bF-_w/viewform" target="_blank">Log a hangout</a><span class="meta">Google Form</span></div>
       <div class="row"><a href="https://nso.upenn.edu/programs/penn-mentor-meals-program/" target="_blank">Mentor Meals</a><span class="meta">Reserve in advance</span></div>
       <div class="row"><a href="https://undergrad-inside.wharton.upenn.edu/calendars/" target="_blank">Wharton calendars and center newsletters</a><span class="meta">Website</span></div>
-    </div>
-    <div class="cell-tag" style="border-top: 1px solid #000;">Suggested Events to Take Your Pod To</div>
-    <div class="cell-body pod-body">
-      <!-- The committees' on-campus events sheet -->
-      <iframe class="pod-frame" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTGUEO6ABd2C6bA5vr1rpYaUnuBqED70o9qwiFl52MUolb4fU5HFyJXNsSKxl6q7PYgIfVkKBEPzwAv/pubhtml?widget=true&amp;headers=false" title="Suggested events to take your pod to" loading="lazy"></iframe>
-      <p class="note" style="margin: 8px 0 0;"><a href="https://docs.google.com/spreadsheets/d/1pcEn2as36jU42TIKAY4gwIn3TTsFCfK33itAGPsUkTo/edit?usp=sharing" target="_blank">Open the full list</a>.</p>
+      <div class="row" style="flex-wrap: wrap; row-gap: 0;"><a href="https://docs.google.com/spreadsheets/d/1pcEn2as36jU42TIKAY4gwIn3TTsFCfK33itAGPsUkTo/edit?usp=sharing" target="_blank">Suggested events to take your pod to</a><span class="meta">Google Sheet</span><span class="idea-where" style="flex-basis: 100%;">On-campus events picked by the committees.</span></div>
     </div>
   </section>
 
@@ -404,6 +394,9 @@ const DUE = [
   { title: 'Sign up to lead the Philly Trek to Five Below (Thu, Nov 5)', hideAfter: '2026-11-04', tag: 'ecd', links: [], pending: 'Text Joel' },
   { title: 'RSVP for the Hoco Alumni Brunch (Sat, Nov 14; upperclassmen and E/CDs, not first-years)', due: '2026-11-07', tag: 'ecd', links: [
     ['RSVP form', 'https://forms.gle/BY2p5kjN7HZZ7q7D9']
+  ]},
+  { title: 'Studying abroad or taking a gap semester in the spring? Let us know (required if so)', tag: 'ecd', links: [
+    ['Spring away form', 'https://docs.google.com/forms/d/e/1FAIpQLSfmEjGvF5wezQ8floVYnT4QE2AS0iMDWxKZhLas_B5NzNdOdQ/viewform']
   ]},
   { title: 'Wharton Council recruitment survey (enter to win $10 PennCash)', due: '2026-10-20', tag: 'optional', links: [
     ['Anonymous survey', 'https://wharton.qualtrics.com/jfe/form/SV_8kRkBCav70QgBtc']
