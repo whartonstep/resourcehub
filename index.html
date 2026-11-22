@@ -380,7 +380,7 @@ const CONFIG = {
 
 const TOWNHALLS = ['2026-10-11', '2026-10-25', '2026-11-08', '2026-11-22', '2026-12-06'];
 
-// Items disappear the day after their due date
+// Items disappear the day after their due date. dueTime (optional, e.g. '11:59 pm') is added after the date
 const DUE = [
   // tag: 'ecd' = E/CDs, 'board' = Board and committees, 'all' = Everyone, 'optional' = Optional (non-STEP opportunities)
   { title: 'Mentor and mentee feedback forms', due: '2026-10-23', tag: 'ecd', links: [
@@ -394,8 +394,11 @@ const DUE = [
   { title: 'RSVP for the Hoco Alumni Brunch (Sat, Nov 14; upperclassmen and E/CDs, not first-years)', due: '2026-11-07', tag: 'ecd', links: [
     ['RSVP form', 'https://forms.gle/BY2p5kjN7HZZ7q7D9']
   ]},
-  { title: 'Studying abroad or taking a gap semester in the spring? Let us know (required if so)', tag: 'ecd', links: [
+  { title: 'Studying abroad or taking a gap semester in the spring? Let us know (required if so)', due: '2026-12-04', dueTime: '11:59 pm', tag: 'ecd', links: [
     ['Spring away form', 'https://docs.google.com/forms/d/e/1FAIpQLSfmEjGvF5wezQ8floVYnT4QE2AS0iMDWxKZhLas_B5NzNdOdQ/viewform']
+  ]},
+  { title: 'Log any pod hangouts you haven’t recorded yet (ASAP preferred; we need them to process Winter Whartonland eligibility)', due: '2026-12-02', dueTime: '11:59 pm', tag: 'ecd', links: [
+    ['Pod hangout form', 'https://docs.google.com/forms/d/e/1FAIpQLScwN8TsHiMWEZjTMp1zXAf3xvLiCRVGYwHSY0S1Hz179bF-_w/viewform']
   ]},
   { title: 'Sign up to bring something to the Dec 6 townhall potluck', hideAfter: '2026-12-06', tag: 'ecd', links: [
     ['Potluck sign-up sheet', 'https://docs.google.com/spreadsheets/d/1nyp1lycOoAo7zAervOe1TmOVXMJTdSNCn2cEa4Q5VZk/edit?gid=0#gid=0']
@@ -453,7 +456,7 @@ if (!live.length) {
 } else {
   dueList.innerHTML = live.map(x => {
     const date = x.due
-      ? 'Due ' + new Date(x.due + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+      ? 'Due ' + new Date(x.due + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + (x.dueTime ? ', ' + x.dueTime : '')
       : (x.label || 'Open now');
     const links = x.links.length
       ? x.links.map(l => `<a href="${l[1]}" target="_blank">${l[0]}</a>`).join('')
